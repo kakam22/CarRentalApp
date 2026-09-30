@@ -1,15 +1,19 @@
+import { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 type Props = {
   title: string;
+  subtitle?: string;
+  children?: ReactNode;
 };
 
 // Temporary empty screen used until a page is implemented.
-export default function PlaceholderScreen({ title }: Props) {
+export default function PlaceholderScreen({ title, subtitle = 'Coming soon', children }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>Coming soon</Text>
+      <Text style={styles.subtitle}>{subtitle}</Text>
+      {children}
     </View>
   );
 }

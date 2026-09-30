@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -12,17 +13,24 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { useAuth } from '../context/AuthContext';
+import { AuthError } from '../services/authService';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Login / front page (wireframe page 1).
-// There is no backend yet, so any well-formed email + non-empty password logs in.
+// Credentials are checked against the dummy users in src/data/users.ts.
 export default function LoginScreen() {
+  const { logIn, continueAsGuest } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const passwordRef = useRef<TextInput>(null);
 
-  const handleLogIn = () => {
+  const handleLogIn = async () => {
+    if (loading) return;
     if (!EMAIL_PATTERN.test(email.trim())) {
       setError('Please enter a valid email address.');
       return;
@@ -31,8 +39,32 @@ export default function LoginScreen() {
       setError('Please enter your password.');
       return;
     }
+
     setError(null);
+    setLoading(true);
+    try {
+      await logIn(email, password);
+      router.replace('/search');
+    } catch (e) {
+      setError(e instanceof AuthError ? e.message : 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGuest = () => {
+    continueAsGuest();
     router.replace('/search');
+  };
+
+  // Clear the error as soon as the user starts correcting their input.
+  const onChangeEmail = (text: string) => {
+    setEmail(text);
+    setError(null);
+  };
+  const onChangePassword = (text: string) => {
+    setPassword(text);
+    setError(null);
   };
 
   const handleSocial = (provider: string) => {
@@ -57,23 +89,40 @@ export default function LoginScreen() {
             placeholder="Email address"
             placeholderTextColor="#999"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={onChangeEmail}
+            editable={!loading}
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
             textContentType="emailAddress"
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            submitBehavior="submit"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#999"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoComplete="password"
-            textContentType="password"
-            onSubmitEditing={handleLogIn}
-          />
+          <View style={styles.passwordWrapper}>
+            <TextInput
+              ref={passwordRef}
+              style={[styles.input, styles.passwordInput]}
+              placeholder="Password"
+              placeholderTextColor="#999"
+              value={password}
+              onChangeText={onChangePassword}
+              editable={!loading}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoComplete="password"
+              textContentType="password"
+              returnKeyType="go"
+              onSubmitEditing={handleLogIn}
+            />
+            <Pressable
+              style={styles.showPassword}
+              onPress={() => setShowPassword((v) => !v)}
+              accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <Text style={styles.mutedText}>{showPassword ? 'Hide' : 'Show'}</Text>
+            </Pressable>
+          </View>
 
           <Pressable style={styles.forgot} onPress={() => router.push('/forgot-password')}>
             <Text style={styles.mutedText}>Forgot password?</Text>
@@ -82,19 +131,29 @@ export default function LoginScreen() {
           {error && <Text style={styles.error}>{error}</Text>}
 
           <Pressable
-            style={({ pressed }) => [styles.button, styles.primaryButton, pressed && styles.pressed]}
+            style={({ pressed }) => [
+              styles.button,
+              styles.primaryButton,
+              (pressed || loading) && styles.pressed,
+            ]}
             onPress={handleLogIn}
+            disabled={loading}
           >
-            <Text style={styles.primaryButtonText}>Log In</Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.primaryButtonText}>Log In</Text>
+            )}
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.button, styles.secondaryButton, pressed && styles.pressed]}
             onPress={() => router.push('/sign-up')}
+            disabled={loading}
           >
             <Text style={styles.secondaryButtonText}>Sign Up</Text>
           </Pressable>
 
-          <Pressable style={styles.guest} onPress={() => router.replace('/search')}>
+          <Pressable style={styles.guest} onPress={handleGuest} disabled={loading}>
             <Text style={[styles.mutedText, styles.guestText]}>Continue as guest</Text>
           </Pressable>
 
@@ -178,6 +237,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     fontSize: 14,
     color: '#333',
+  },
+  passwordWrapper: {
+    justifyContent: 'center',
+  },
+  passwordInput: {
+    paddingRight: 60,
+  },
+  showPassword: {
+    position: 'absolute',
+    right: 12,
+    top: 0,
+    height: 44,
+    justifyContent: 'center',
   },
   forgot: {
     alignSelf: 'flex-end',
