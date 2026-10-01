@@ -8,12 +8,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type TabKey = "search" | "trips" | "profile";
-
 type Props = {
     userName?: string;
     userEmail?: string;
-    onNavigate?: (tab: TabKey) => void;
     onLogout?: () => void;
 };
 
@@ -24,22 +21,13 @@ const SETTINGS = [
     { key: "help", label: "Help & support" },
 ] as const;
 
-const TABS: { key: TabKey; label: string }[] = [
-    { key: "search", label: "Search" },
-    { key: "trips", label: "Trips" },
-    { key: "profile", label: "Profile" },
-];
-
 export default function ProfileScreen({
                                           userName = "User Name",
                                           userEmail = "user@email.com",
-                                          onNavigate,
                                           onLogout,
                                       }: Props) {
-    const activeTab: TabKey = "profile";
-
     return (
-        <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
+        <SafeAreaView style={styles.screen} edges={["top"]}>
             <ScrollView contentContainerStyle={styles.content}>
                 <Text style={styles.title}>Profile</Text>
 
@@ -79,27 +67,6 @@ export default function ProfileScreen({
                     <Text style={styles.logout}>Log out</Text>
                 </Pressable>
             </ScrollView>
-
-            {/* Bottom tab bar */}
-            <View style={styles.tabBar}>
-                {TABS.map((tab) => {
-                    const active = tab.key === activeTab;
-                    return (
-                        <Pressable
-                            key={tab.key}
-                            style={styles.tab}
-                            onPress={() => onNavigate?.(tab.key)}
-                        >
-                            <View
-                                style={[styles.tabIcon, active && styles.tabIconActive]}
-                            />
-                            <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
-                                {tab.label}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
         </SafeAreaView>
     );
 }
@@ -184,35 +151,5 @@ const styles = StyleSheet.create({
     logout: {
         fontSize: 16,
         color: "#8B3A3A",
-    },
-    tabBar: {
-        flexDirection: "row",
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: LINE,
-        backgroundColor: "#FFFFFF",
-        paddingTop: 12,
-        paddingBottom: 8,
-    },
-    tab: {
-        flex: 1,
-        alignItems: "center",
-        gap: 6,
-    },
-    tabIcon: {
-        width: 26,
-        height: 26,
-        borderRadius: 6,
-        backgroundColor: "#E6E6E6",
-    },
-    tabIconActive: {
-        backgroundColor: "#2B2B2B",
-    },
-    tabLabel: {
-        fontSize: 12,
-        color: "#8A8A8A",
-    },
-    tabLabelActive: {
-        color: "#2B2B2B",
-        fontWeight: "500",
     },
 });
