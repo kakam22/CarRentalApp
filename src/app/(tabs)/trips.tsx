@@ -1,5 +1,5 @@
-import PlaceholderScreen from '../../components/PlaceholderScreen';
+import { Redirect } from 'expo-router';
 
 export default function TripsScreen() {
-  return <PlaceholderScreen title="My Trips" />;
+  return <Redirect href="/BookingConfirmation" />;
 }
