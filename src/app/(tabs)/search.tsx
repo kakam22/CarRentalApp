@@ -1,7 +1,17 @@
-import PlaceholderScreen from '../../components/PlaceholderScreen';
+import React from 'react';
+import { router } from 'expo-router';
+import { SearchScreen } from '../../screens';
 import { useAuth } from '../../context/AuthContext';
 
-export default function SearchScreen() {
+export default function SearchRoute() {
   const { user } = useAuth();
-  return <PlaceholderScreen title={`Hello, ${user?.name ?? 'User'}`} subtitle="Search page coming soon" />;
+
+  return (
+    <SearchScreen
+      userName={user?.name ?? 'User Name'}
+      onSelectCar={(carId: string) => {
+        router.push({ pathname: '/car-details', params: { carId } });
+      }}
+    />
+  );
 }

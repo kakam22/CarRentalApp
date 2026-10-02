@@ -1,5 +1,6 @@
-import PlaceholderScreen from '../../components/PlaceholderScreen';
+import React from 'react';
+import { TripsScreen } from '../../screens';
 
-export default function TripsScreen() {
-  return <PlaceholderScreen title="My Trips" />;
+export default function TripsRoute() {
+  return <TripsScreen />;
 }

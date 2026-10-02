@@ -9,7 +9,7 @@ type AuthContextValue = {
   logOut: () => void;
 };
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+export const AuthContext = createContext<AuthContextValue | null>(null);
 
 // Holds the logged-in user in memory. It is not persisted yet, so restarting the app logs you out.
 export function AuthProvider({ children }: { children: ReactNode }) {
