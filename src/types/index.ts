@@ -24,6 +24,13 @@ export interface BookingDetails {
   days: number;
 }
 
+export interface BookingExtra {
+  id: string;
+  name: string;
+  shortName: string;
+  pricePerDay: number;
+}
+
 export type RootStackParamList = {
   Tabs: undefined;
   CarDetails: { carId: string };
