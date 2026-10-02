@@ -9,6 +9,8 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="car-details" options={{ headerShown: false }} />
+        <Stack.Screen name="trip-details" options={{ headerShown: false }} />
+        <Stack.Screen name="payment" options={{ title: 'Payment' }} />
         <Stack.Screen name="sign-up" options={{ title: 'Sign Up' }} />
         <Stack.Screen name="forgot-password" options={{ title: 'Forgot Password' }} />
         <Stack.Screen name="booking-confirmation" options={{ headerShown: false }}/>
