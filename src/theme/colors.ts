@@ -29,7 +29,17 @@ export const colors = {
   tabActive: '#333333',
   tabInactive: '#CCCCCC',
   tabBorder: '#E5E5E5',
-  
+
+  // Trip status badges (background / text pairs)
+  statusConfirmedBg: '#E3F4E6',
+  statusConfirmedText: '#2E7D32',
+  statusPendingBg: '#FBF1D9',
+  statusPendingText: '#8A6A1F',
+  statusCompletedBg: '#EFEFEF',
+  statusCompletedText: '#666666',
+  statusCancelledBg: '#F7E3E3',
+  statusCancelledText: '#8B3A3A',
+
   // Status & shadows
   shadow: '#000000',
   transparent: 'transparent',

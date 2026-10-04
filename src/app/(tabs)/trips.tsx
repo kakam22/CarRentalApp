@@ -1,5 +1,6 @@
-import { Redirect } from 'expo-router';
+import { router } from 'expo-router';
+import { TripsScreen } from '../../screens';
 
-export default function TripsScreen() {
-  return <Redirect href="/BookingConfirmation" />;
+export default function TripsRoute() {
+  return <TripsScreen onBrowseCars={() => router.navigate('/search')} />;
 }

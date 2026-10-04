@@ -24,11 +24,17 @@ export interface BookingDetails {
   days: number;
 }
 
-export interface BookingExtra {
+export type TripStatus = 'Confirmed' | 'Pending' | 'Completed' | 'Cancelled';
+
+export type TripPeriod = 'upcoming' | 'past';
+
+export interface Trip {
   id: string;
-  name: string;
-  shortName: string;
-  pricePerDay: number;
+  carName: string;
+  dateRange: string;
+  location: string;
+  status: TripStatus;
+  period: TripPeriod;
 }
 
 export type RootStackParamList = {
