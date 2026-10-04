@@ -11,6 +11,7 @@ export const spacing = {
   heroHeight: 360,
   detailsImageHeight: 200,
   cardImageSize: 100,
+  tripImageSize: 72,
   buttonHeight: 56,
 } as const;
 

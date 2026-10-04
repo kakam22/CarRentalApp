@@ -9,3 +9,6 @@ export * from './SectionTitle';
 export * from './Divider';
 export * from './FeatureRow';
 export * from './PrimaryButton';
+export * from './StatusBadge';
+export * from './SegmentedControl';
+export * from './TripCard';
