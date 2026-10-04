@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -63,17 +62,7 @@ export const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
       onBookPress();
       return;
     }
-    console.log('Booking confirmed for:', {
-      car: car.name,
-      pickup: `${booking.pickupLocation}, ${booking.pickupDate} ${booking.pickupTime}`,
-      return: `${booking.returnLocation}, ${booking.returnDate} ${booking.returnTime}`,
-      total: `$${breakdown.total.toFixed(2)}`,
-    });
-    Alert.alert(
-      'Booking Request',
-      `You selected ${car.name} for 3 days.\nTotal: $${breakdown.total.toFixed(2)}`,
-      [{ text: 'OK' }]
-    );
+    router.push({ pathname: '/trip-details', params: { carId: car.id } });
   };
 
   return (
