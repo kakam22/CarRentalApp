@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { colors, radii, spacing, typography } from '../theme';
-import { Trip } from '../../../../Downloads/trips-changes/trips-changes/src/types';
+import { Trip } from '../types';
 import { ImagePlaceholder } from './ImagePlaceholder';
 import { StatusBadge } from './StatusBadge';
 
