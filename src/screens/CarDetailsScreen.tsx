@@ -62,8 +62,7 @@ export const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
       onBookPress();
       return;
     }
-    // Booking flow: Trip Details -> Payment -> Booking Confirmation.
-    router.push({ pathname: '/trip-details', params: { carId: car.id } });
+   router.push({ pathname: '/trip-details', params: { carId: car.id } });
   };
 
   return (
