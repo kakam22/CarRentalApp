@@ -62,13 +62,7 @@ export const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
       onBookPress();
       return;
     }
-   router.push({
-  pathname: '/BookingConfirmation',
-  params: {
-    vehicle: car.name,
-    totalPaid: `$${breakdown.total.toFixed(2)}`,
-  },
-});
+   router.push({ pathname: '/trip-details', params: { carId: car.id } });
   };
 
   return (

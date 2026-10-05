@@ -12,3 +12,4 @@ export * from './PrimaryButton';
 export * from './StatusBadge';
 export * from './SegmentedControl';
 export * from './TripCard';
+export * from './StepIndicator';
