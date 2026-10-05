@@ -13,7 +13,7 @@ export default function RootLayout() {
         <Stack.Screen name="payment" options={{ title: 'Payment' }} />
         <Stack.Screen name="sign-up" options={{ title: 'Sign Up' }} />
         <Stack.Screen name="forgot-password" options={{ title: 'Forgot Password' }} />
-        <Stack.Screen name="booking-confirmation" options={{ headerShown: false }}/>
+        <Stack.Screen name="BookingConfirmation" options={{ headerShown: false }}/>
       </Stack>
       <StatusBar style="dark" />
     </AuthProvider>
