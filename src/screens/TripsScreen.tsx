@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { PrimaryButton, SegmentedControl, TripCard } from '../components';
 import { mockTrips } from '../data/mockTrips';
 import { colors, spacing, typography } from '../theme';
-import { Trip, TripPeriod } from '../../../../Downloads/trips-changes/trips-changes/src/types';
+import { Trip, TripPeriod } from '../types';
 
 export interface TripsScreenProps {
   trips?: Trip[];

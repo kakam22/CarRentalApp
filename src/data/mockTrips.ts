@@ -1,4 +1,4 @@
-import { Trip } from '../../../../Downloads/trips-changes/trips-changes/src/types';
+import { Trip } from '../types';
 
 // Dummy trips used until the backend exists.
 // `period` is set by hand (not computed from the dates) so the mock data

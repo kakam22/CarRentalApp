@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { colors, radii, spacing, typography } from '../theme';
-import { TripStatus } from '../../../../Downloads/trips-changes/trips-changes/src/types';
+import { TripStatus } from '../types';
 
 export interface StatusBadgeProps {
   status: TripStatus;
