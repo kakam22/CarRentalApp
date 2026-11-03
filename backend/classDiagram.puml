@@ -1,0 +1,126 @@
+@startuml
+
+class Vehicle {
+    +int vehicleId
+    +String make
+    +String model
+    +String licensePlate
+    +VehicleType type
+    +Decimal dailyRate
+    +VehicleStatus status
+    +isAvailable()
+    +updateStatus()
+}
+
+class Customer {
+    +int customerId
+    +String name
+    +String email
+    +String phone
+    +String driverLicense
+    +register(String:  email, String: password)
+    +login(String: email, String: password)
+    +logout()
+    +makeReservation(Date: pickupDate, Date returnDate, Vehicle: vehicle)
+    +cancelReservation()
+}
+
+
+
+class Rental {
+    +int rentalId
+    +Date startDate
+    +Date endDate
+    +Decimal totalCost
+    +RentalStatus status
+    +calculateCost()
+    +startRental()
+    +completeRental()
+}
+
+class Reservation {
+    +int reservationId
+    +int customerId
+    +Date pickupDate
+    +Date returnDate
+    +ReservationStatus status
+    +create()
+    +cancel()
+    +confirm()
+}
+
+class Payment {
+    +int paymentId
+    +Decimal amount
+    +Date paymentDate
+    +PaymentMethod method
+    +PaymentStatus status
+    +processPayment()
+    +refund()
+}
+
+class Location {
+    +int locationId
+    +String name
+    +String address
+    +String city
+    +String country
+}
+
+enum VehicleType {
+    ECONOMY
+    SUV
+    LUXURY
+    VAN
+    ELECTRIC
+}
+
+enum VehicleStatus {
+    AVAILABLE
+    RESERVED
+    RENTED
+    MAINTENANCE
+}
+
+enum RentalStatus {
+    ACTIVE
+    COMPLETED
+    CANCELLED
+}
+
+enum ReservationStatus {
+    PENDING
+    CONFIRMED
+    CANCELLED
+}
+
+enum PaymentMethod {
+    CREDIT_CARD
+    DEBIT_CARD
+    PAYPAL
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    REFUNDED
+    FAILED
+}
+
+Customer "1" --> "0..*" Reservation : makes
+' Customer "1" --> "0..*" Rental : has
+
+Reservation "1" --> "1" Vehicle : reserves
+Reservation "1" --> "1" Location : pickup
+Reservation "1" --> "1" Location : return
+Reservation "1" --> "1" Rental : has
+
+Rental "1" --> "1" Vehicle : rents
+Rental "1" --> "1" Payment : paid by
+Rental "1" --> "1" Location : pickup
+Rental "1" --> "1" Location : return
+
+Vehicle "0..*" --> "1" VehicleType : type
+Location "1" --> "0..*" Vehicle : contains
+
+@enduml
