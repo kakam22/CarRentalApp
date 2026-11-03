@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tabs } from 'expo-router';
 import { ColorValue, View } from 'react-native';
 import { colors, radii, spacing, typography } from '../../theme';

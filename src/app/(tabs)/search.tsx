@@ -1,4 +1,3 @@
-import React from 'react';
 import { router } from 'expo-router';
 import { SearchScreen } from '../../screens';
 import { useAuth } from '../../context/AuthContext';
