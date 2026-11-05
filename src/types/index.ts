@@ -43,14 +43,3 @@ export interface Trip {
   status: TripStatus;
   period: TripPeriod;
 }
-
-export type RootStackParamList = {
-  Tabs: undefined;
-  CarDetails: { carId: string };
-};
-
-export type TabParamList = {
-  Search: undefined;
-  Trips: undefined;
-  Profile: undefined;
-};
