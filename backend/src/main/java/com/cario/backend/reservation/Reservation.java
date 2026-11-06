@@ -1,7 +1,10 @@
 package com.cario.backend.reservation;
 
-import com.cario.backend.reservation.enums.RentalStatus;
+import com.cario.backend.location.Location;
+import com.cario.backend.rental.Rental;
+import com.cario.backend.reservation.enums.ReservationStatus;
 import com.cario.backend.user.UserInfo;
+import com.cario.backend.vehicle.Vehicle;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,11 +12,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -31,14 +31,41 @@ public class Reservation {
     @JoinColumn(name = "customer_id")
     private UserInfo user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pickup_location_id", nullable = false)
+    private Location pickupLocation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "return_location_id", nullable = false)
+    private Location returnLocation;
+
+    @OneToOne(mappedBy = "reservation", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Rental rental;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate pickupDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate returnDate;
 
-
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private RentalStatus reservationStatus;
+    @Column(nullable = false)
+    private ReservationStatus reservationStatus;
+
+    public void create() {
+        this.reservationStatus = ReservationStatus.PENDING;
+    }
+
+    public void confirm() {
+        this.reservationStatus = ReservationStatus.CONFIRMED;
+    }
+
+    public void cancel() {
+        this.reservationStatus = ReservationStatus.CANCELLED;
+    }
 }
