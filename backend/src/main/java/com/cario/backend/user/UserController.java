@@ -1,21 +1,13 @@
+
 package com.cario.backend.user;
 
-
-
-import com.cario.backend.auth.AuthRequest;
-import com.cario.backend.user.UserInfo;
-import com.cario.backend.Jwt.JwtService;
-import com.cario.backend.user.UserInfoService;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,36 +15,75 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserInfoService service;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
 
+    // Public welcome endpoint
     @GetMapping("/welcome")
     public String welcome() {
-        return "Welcome this endpoint is not secure";
+        return "Welcome! This endpoint is not secure.";
     }
 
-    @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
-        return service.addUser(userInfo);
+    // Register new user
+    @PostMapping("/register")
+    public ResponseEntity<UserInfo> addNewUser(
+            @Valid @RequestBody UserInfo userInfo) {
+
+        UserInfo savedUser = service.addUser(userInfo);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedUser);
     }
 
-    // Removed the role checks here as they are already managed in SecurityConfig
+    // Login user
+    @PostMapping("/login")
+    public ResponseEntity<UserInfo> login(
+            @Valid @RequestBody UserLoginRequest request) {
 
-    @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
-            );
-            if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(authRequest.getEmail());
-            } else {
-                throw new UsernameNotFoundException("Invalid user request!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        UserInfo user = service.login(request);
 
+        return ResponseEntity.ok(user);
+    }
+
+    // Get all users
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInfo>> getAllUsers() {
+        return ResponseEntity.ok(service.getAllUsers());
+    }
+
+    // Get user by ID
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserInfo> getUserById(
+            @PathVariable Integer userId) {
+
+        return ResponseEntity.ok(service.getUserById(userId));
+    }
+
+    // Get user by email
+    @GetMapping("/users/email/{email}")
+    public ResponseEntity<UserInfo> getUserByEmail(
+            @PathVariable String email) {
+
+        return ResponseEntity.ok(service.getUserByEmail(email));
+    }
+
+    // Update user information
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UserInfo> updateUser(
+            @PathVariable Integer userId,
+            @Valid @RequestBody UserInfo userInfo) {
+
+        return ResponseEntity.ok(
+                service.updateUser(userId, userInfo)
+        );
+    }
+
+    // Delete user
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Integer userId) {
+
+        service.deleteUser(userId);
+
+        return ResponseEntity.noContent().build();
     }
 }

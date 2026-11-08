@@ -1,10 +1,14 @@
+
 package com.cario.backend.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public interface UserInfoRepository extends JpaRepository<UserInfo, UUID> {
+public interface UserInfoRepository
+        extends JpaRepository<UserInfo, Integer> {
+
     Optional<UserInfo> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

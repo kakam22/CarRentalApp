@@ -1,46 +1,105 @@
+
 package com.cario.backend.user;
 
-//import com.cario.backend.user.UserInfo;
-import com.cario.backend.user.UserInfoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 @Service
-public class UserInfoService implements UserDetailsService {
+public class UserInfoService {
 
     private final UserInfoRepository repository;
-    private final PasswordEncoder encoder;
 
-    @Autowired
-    public UserInfoService(UserInfoRepository repository, PasswordEncoder encoder) {
+    public UserInfoService(UserInfoRepository repository) {
         this.repository = repository;
-        this.encoder = encoder;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    // Register new user
+    public UserInfo addUser(UserInfo userInfo) {
 
-        UserInfo user = repository.findByEmail(username)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException(
-                                "User not found with email: " + username));
+        if (repository.existsByEmail(userInfo.getEmail())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email is already registered"
+            );
+        }
 
-        return new UserInfoDetails(user);
+        return repository.save(userInfo);
     }
 
-    // Add any additional methods for registering or managing users
-    public String addUser(UserInfo userInfo) {
-        // Encrypt password before saving
-        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-        repository.save(userInfo);
-        return "User added successfully!";
+    // Login user (plain-text password comparison)
+    public UserInfo login(UserLoginRequest request) {
+
+        UserInfo user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid email or password"
+                ));
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid email or password"
+            );
+        }
+
+        return user;
+    }
+
+    // Get all users
+    public List<UserInfo> getAllUsers() {
+        return repository.findAll();
+    }
+
+    // Get user by ID
+    public UserInfo getUserById(Integer userId) {
+        return repository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User not found"
+                ));
+    }
+
+    // Get user by email
+    public UserInfo getUserByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User not found"
+                ));
+    }
+
+    // Update user information
+    @Transactional
+    public UserInfo updateUser(
+            Integer userId,
+            UserInfo updatedUser
+    ) {
+
+        UserInfo existingUser = getUserById(userId);
+
+        if (!existingUser.getEmail().equals(updatedUser.getEmail())
+                && repository.existsByEmail(updatedUser.getEmail())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email is already registered"
+            );
+        }
+
+        existingUser.setFirstName(updatedUser.getFirstName());
+        existingUser.setLastName(updatedUser.getLastName());
+        existingUser.setEmail(updatedUser.getEmail());
+
+        return repository.save(existingUser);
+    }
+
+    // Delete user
+    public void deleteUser(Integer userId) {
+        UserInfo user = getUserById(userId);
+        repository.delete(user);
     }
 }
